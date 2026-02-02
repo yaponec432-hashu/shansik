@@ -21,9 +21,7 @@ jobs:
           python-version: "3.13"
 
       - name: Install uv
-        run: |
-          bash -c "$(curl -Lfs https://astral.sh/uv/install.sh)"
-          echo "${HOME}/.cargo/bin" >> "${GITHUB_PATH}"
+        run: bash -c "$(curl -Lfs https://astral.sh/uv/install.sh)"
 
       - name: Run python
         run: uv run ./main.py
