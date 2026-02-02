@@ -358,7 +358,7 @@ async def calculate(ctx: Interaction, expression: str) -> None:
 @app_commands.describe(location="Set the location, like moskva")
 async def weather(ctx: Interaction, location: str) -> None:
     await defer(ctx)
-    url = f"https://wttr.in/{location}?format=%t+%C+%uuw+%T&m&lang=ru"
+    url = f"https://wttr.in/{location}?format=%t+%C+%uuv+%T&m&lang=ru"
     result = await get_response(url)
     await reply(ctx, result, True)
 
