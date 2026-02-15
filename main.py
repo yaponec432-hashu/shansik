@@ -43,11 +43,36 @@ api_issue = f"{markup} issue"
 
 @bot.event
 async def on_message(message: Message) -> None:
-    if message.author != bot.user:
+    content = ""
+    padla = 979686343540101122  # Ne zlim Badlu
+    crystal = 402497851982086165  # Ganba Kristalko!!
+    author = message.author.id
+    if author not in (bot.user.id, padla):
         anti_you = "\u0430\u043d\u0442\u0438 \u044e"
-        if anti_you in message.content.lower():
-            emoji = "<a:halal_antiyou:1463296137174974587>"
-            _ = await message.reply(content=emoji, mention_author=False)
+        channel = message.channel
+        channel_regex = r"^(.*-)([0-9x]{5})(-[1-5f])?$"
+        message_text = message.content.lower()
+        message_match = match("[0-9x]{5}", message_text)
+        regex_match = match(channel_regex, channel.name)
+        if regex_match and message_match and author == crystal:
+            prefix = regex_match.group(1)
+            old_code = regex_match.group(2)
+            new_code = message_text
+            new_name = f"{prefix}{new_code}"
+            try:
+                content = f"~~{channel.name}~~ -> `{new_name}`\n*Goida!*"
+                _ = await wait_for(channel.edit(name=new_name), timeout=2)
+            except TimeoutError:
+                content = (
+                    f"New room code: **{new_name}**\n"
+                    "*2 channel name edits per 10 minutes limit reached*"
+                )
+            except Forbidden:
+                content = "U menya net prav"
+        elif anti_you in message_text:
+            content = "<a:halal_antiyou:1463296137174974587>"
+        if content:
+            _ = await message.reply(content=content, mention_author=False)
 
 @bot.tree.command(description="Flip a coin")
 async def coin(ctx: Interaction) -> None:
@@ -520,7 +545,7 @@ async def edit_room(
     channel = ctx.channel
     channel_regex = r"^(.*-)([0-9x]{5})(-[1-5f])?$"
     regex_match = match(channel_regex, channel.name)
-    if match:
+    if regex_match:
         prefix = regex_match.group(1)
         old_code = regex_match.group(2)
         old_suffix = regex_match.group(3) or ""
