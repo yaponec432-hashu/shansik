@@ -57,7 +57,8 @@ async def on_message(message: Message) -> None:
         if regex_match and message_match and author == crystal:
             prefix = regex_match.group(1)
             old_code = regex_match.group(2)
-            new_name = f"{prefix}{message_text}"
+            new_code = message_text
+            new_name = f"{prefix}{new_code}"
             try:
                 content = f"~~{channel.name}~~ -> `{new_name}`\n*Goida!*"
                 _ = await wait_for(channel.edit(name=new_name), timeout=2)
