@@ -45,6 +45,7 @@ api_issue = f"{markup} issue"
 async def on_message(message: Message) -> None:
     content = ""
     padla = 979686343540101122  # Ne zlim Badlu
+    melinda = 863096047214919700  # Kozil
     crystal = 402497851982086165  # Ganba Kristalko!!
     author = message.author.id
     if author not in (bot.user.id, padla):
@@ -54,7 +55,7 @@ async def on_message(message: Message) -> None:
         message_text = message.content.lower()
         message_match = match("[0-9x]{5}", message_text)
         regex_match = match(channel_regex, channel.name)
-        if regex_match and message_match and author == crystal:
+        if regex_match and message_match and author in (melinda, crystal):
             prefix = regex_match.group(1)
             old_code = regex_match.group(2)
             new_code = message_text
