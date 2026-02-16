@@ -1,6 +1,5 @@
 name: namaz
 on:
-  workflow_dispatch:
   schedule:
     - cron: "49 * * * *"
 concurrency:
