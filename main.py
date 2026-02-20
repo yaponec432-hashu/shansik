@@ -5,75 +5,83 @@ from asyncio import wait_for, TimeoutError
 from urllib.parse import quote_plus
 from random import randint, choice
 from datetime import datetime
+from re import compile, match
 from os import environ
-from re import match
 from gpytranslate import Translator
 from simpleeval import simple_eval
 from aiohttp import ClientSession
 from discord.ext import commands
+from json import loads
+from wikipedia import (
+    set_lang,
+    summary,
+    DisambiguationError,
+    PageError
+)
 from discord import (
     app_commands,
     Intents,
     Game,
-    Forbidden,
     Interaction,
+    TextChannel,
+    Message,
     Member,
-    Message
+    Forbidden
 )
-from wikipedia import (
-    set_lang,
-    summary,
-    PageError,
-    DisambiguationError
-)
-from orjson import loads
 
 activity = Game(name="slava ReBRT")
 intents = Intents.default()
-
 intents.message_content = True
-
 bot = commands.Bot(command_prefix="!", intents=intents, activity=activity)
 
-api_status_url = "https://status.sekai.best/history/api"
-markup = f"[api.sekai.best]({api_status_url})"
-api_alive = f"{markup} says it is alive ^^"
-api_dead = f"{markup} umer nahui :("
-api_issue = f"{markup} issue"
+translator = Translator()
+channel_regex = compile(r"(^.[0-9]*-)[0-9x]{5}(-[1-5])?$", flags=0)
+sekai_code_regex = compile(r"^[0-9x]{5}$", flags=0)
+
+API_URL = "[api.sekai.best](https://status.sekai.best/history/api)"
+api_alive = f"{API_URL} says it is alive ^^"
+api_dead = f"{API_URL} umer nahui :("
+api_issue = f"{API_URL} issue"
 
 @bot.event
 async def on_message(message: Message) -> None:
-    content = ""
-    padla = 979686343540101122  # Ne zlim Badlu
-    melinda = 863096047214919700  # Kozil
-    crystal = 402497851982086165  # Ganba Kristalko!!
-    author = message.author.id
-    if author not in (bot.user.id, padla):
-        anti_you = "\u0430\u043d\u0442\u0438 \u044e"
-        channel = message.channel
-        channel_regex = r"^(.*-)([0-9x]{5})(-[1-5f])?$"
-        message_text = message.content.lower()
-        message_match = match("[0-9x]{5}", message_text)
-        regex_match = match(channel_regex, channel.name)
-        if regex_match and message_match and author in (melinda, crystal):
-            prefix = regex_match.group(1)
-            old_code = regex_match.group(2)
-            new_code = message_text
-            new_name = f"{prefix}{new_code}"
-            try:
-                content = f"~~{channel.name}~~ -> `{new_name}`\n*Goida!*"
-                _ = await wait_for(channel.edit(name=new_name), timeout=2)
-            except TimeoutError:
-                content = (
-                    f"New room code: **{new_name}**\n"
-                    "*2 channel name edits per 10 minutes limit reached*"
-                )
-            except Forbidden:
-                content = "U menya net prav"
-        elif anti_you in message_text:
-            content = "<a:halal_antiyou:1463296137174974587>"
-        if content:
-            _ = await message.reply(content=content, mention_author=False)
+    author = message.author
+    if author != bot.user:
+        message_text = message.content
+        allowed_roles = {
+            (
+                "\u0420\u0430\u043d\u043d\u0435\u0440"
+                " \u0440\u043e\u0441\u0442\u0435\u0440\u0430"
+            ),  #  Ranner rostera
+            "\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440",  # Menedzher
+            "\u0418\u043d\u0442\u0435\u0440\u043d"  # Intern
+        }
+        if (
+            sekai_code_regex.match(message_text)
+            and any(role.name in allowed_roles for role in author.roles)
+        ):
+            channel = message.channel
+            channel_name = channel.name
+            channel_match = channel_regex.match(channel_name)
+            if channel_match:
+                prefix = channel_match.group(1)
+                new_name = f"{prefix}{message_text}"
+                try:
+                    content = (
+                        f"~~{channel_name}~~ -> **`{new_name}`**\n*Goida!*"
+                    )
+                    reason = "prikaz kozila"
+                    await wait_for(
+                        channel.edit(name=new_name, reason=reason), timeout=2)
+                except TimeoutError:
+                    content = (
+                        f"New room code: **`{new_name}`**\n"
+                        "*use %rm code to change the channel name*"
+                    )
+                except Forbidden:
+                    content = "U menya net prav"
+                if content:
+                    await message.reply(content=content, mention_author=False)
 
 @bot.tree.command(description="Flip a coin")
 async def coin(ctx: Interaction) -> None:
@@ -128,7 +136,7 @@ async def leaderboard(
     ctx: Interaction,
     type: str = "live",
     region: str = "en",
-    page: int = 2
+    page: int = 1
 ) -> None:
     await defer(ctx)
     url = f"https://api.sekai.best/event/{type}?region={region}"
@@ -167,7 +175,7 @@ async def leaderboard(
 @bot.tree.command(description="Check is api.sekai.best alive")
 async def check_api(ctx: Interaction) -> None:
     url = "https://api.sekai.best/status"
-    response_text = get_response(url)
+    response_text = await get_response(url)
     if response_text is None:
         result = api_dead
     else:
@@ -181,23 +189,6 @@ async def check_api(ctx: Interaction) -> None:
 )
 async def isv(ctx, leader_skill: int, team_skill: int) -> None:
     result = leader_skill*4 + team_skill - 90
-    await reply(ctx, result)
-
-@bot.tree.command(description="Change the room code")
-@app_commands.describe(new_code="Set a new code for the room")
-async def rm_code(ctx: Interaction, new_code: str) -> None:
-    result = await edit_room(ctx, new_code, "")
-    await reply(ctx, result)
-
-@bot.tree.command(description="Change a room's players")
-@app_commands.describe(players="Set a room's players, [1-5] or f")
-async def rm_players(ctx: Interaction, players: str) -> None:
-    result = await edit_room(ctx, "", players)
-    await reply(ctx, result)
-
-@bot.tree.command(description="Close the room")
-async def rm_close(ctx: Interaction) -> None:
-    result = await edit_room(ctx, "xxxxx", "hui")
     await reply(ctx, result)
 
 @bot.tree.command(description="Convert UTC to a discord timestamp")
@@ -299,7 +290,7 @@ async def hex_to_rgb(ctx: Interaction, hex_color: str) -> None:
         app_commands.Choice(name="Television", value=14),
         app_commands.Choice(name="Video games", value=15),
         app_commands.Choice(name="Board games", value=16),
-        app_commands.Choice(name="Science+nature", value=17),
+        app_commands.Choice(name="Science + nature", value=17),
         app_commands.Choice(name="Computers", value=18),
         app_commands.Choice(name="Mathematics", value=19),
         app_commands.Choice(name="Mythology", value=20),
@@ -538,41 +529,6 @@ class Top:
         return (f"{self.top} '{self.user_name[slice(20)]}'"
                 f" {'{0:,}'.format(self.score)}\n")
 
-async def edit_room(
-    ctx: Interaction,
-    new_code: str,
-    new_players: str
-) -> str:
-    channel = ctx.channel
-    channel_regex = r"^(.*-)([0-9x]{5})(-[1-5f])?$"
-    regex_match = match(channel_regex, channel.name)
-    if regex_match:
-        prefix = regex_match.group(1)
-        old_code = regex_match.group(2)
-        old_suffix = regex_match.group(3) or ""
-        final_code = new_code if new_code else old_code
-        if new_players:
-            final_suffix = "" if new_players == "hui" else f"-{new_players}"
-        else:
-            final_suffix = old_suffix
-        new_name = f"{prefix}{final_code}{final_suffix}"
-        if match(channel_regex, new_name):
-            try:
-                result = f"~~{channel.name}~~ -> `{new_name}`\n*Goida!*"
-                _ = await wait_for(channel.edit(name=new_name), timeout=2)
-            except TimeoutError:
-                result = (
-                    f"New room code: **{new_name}**\n"
-                    "*2 channel name edits per 10 minutes limit reached*"
-                )
-            except Forbidden:
-                result = "U menya net prav"
-        else:
-            result = f"Invalid new channel name: {new_name}"
-    else:
-        result = "The channel name is invalid"
-    return result
-
 async def check_rgb(red: int, green: int, blue: int) -> bool:
     values = (red, green, blue)
     result = all(0 <= value <= 255 for value in values)
@@ -587,26 +543,23 @@ async def get_response(url: str) -> str:
             return await response.text()
 
 async def translate_text(text: str, target_language: str) -> str:
-    async with Translator() as translator:
-        result = await translator.translate(text[:2000],
-                                            targetlang=target_language)
-        return result
+    result = await translator.translate(text[:2000],
+                                        targetlang=target_language)
+    return result
 
 async def defer(ctx: Interaction) -> None:
     """Wait longer for a reply."""
-    _ = await ctx.response.defer()
+    await ctx.response.defer()
 
 async def reply(
     ctx: Interaction,
-    result: str | int,
+    result: str | int | float,
     defer: bool = False
 ) -> None:
     """Send the result."""
-    if result == "":
-        result = "Error hz"
     if defer:
-        _ = await ctx.followup.send(result)
+        await ctx.followup.send(result)
     else:
-        _ = await ctx.response.send_message(result)
+        await ctx.response.send_message(result)
 
 bot.run(environ["TOKEN"])
