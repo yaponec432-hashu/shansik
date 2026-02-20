@@ -11,7 +11,7 @@ from gpytranslate import Translator
 from simpleeval import simple_eval
 from aiohttp import ClientSession
 from discord.ext import commands
-from json import loads
+from orjson import loads
 from wikipedia import (
     set_lang,
     summary,
