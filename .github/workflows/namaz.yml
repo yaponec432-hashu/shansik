@@ -26,4 +26,4 @@ jobs:
       - name: Run python
         run: uv run ./main.py
         env:
-          TOKEN: ${{ secrets.TOK }}
+          TOKEN: ${{ secrets.TOKEN }}
