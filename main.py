@@ -358,8 +358,8 @@ async def wikipedia_search(
     try:
         wikitext = summary(text)
     except DisambiguationError as wiki_issue:
-        random = choice(wiki_issue.options)
-        wikitext = summary(random)
+        random_page = choice(wiki_issue.options)
+        wikitext = summary(random_page)
     except PageError:
         wikitext = "Not found"
     result = wikitext[:2000]
