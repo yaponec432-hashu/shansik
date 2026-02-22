@@ -25,7 +25,6 @@ from discord import (
     Interaction,
     TextChannel,
     Message,
-    Member,
     Forbidden
 )
 
@@ -72,7 +71,8 @@ async def on_message(message: Message) -> None:
                     )
                     reason = "prikaz kozila"
                     await wait_for(
-                        channel.edit(name=new_name, reason=reason), timeout=2)
+                        channel.edit(name=new_name, reason=reason),
+                        timeout=2)
                 except TimeoutError:
                     content = (
                         f"New room code: **`{new_name}`**\n"
@@ -80,8 +80,7 @@ async def on_message(message: Message) -> None:
                     )
                 except Forbidden:
                     content = "U menya net prav"
-                if content:
-                    await message.reply(content=content, mention_author=False)
+                await message.reply(content=content, mention_author=False)
 
 @bot.tree.command(description="Flip a coin")
 async def coin(ctx: Interaction) -> None:
@@ -420,17 +419,6 @@ async def qr(ctx: Interaction, text: str) -> None:
     result = url[:2000]
     await reply(ctx, result)
 
-@bot.tree.command(description="Hug a user <3")
-@app_commands.describe(user="Set a user to hug")
-async def hug(ctx: Interaction, user: Member) -> None:
-    category = choice(("cuddle", "hug"))
-    url = f"https://api.waifu.pics/sfw/{category}"
-    response_text = await get_response(url)
-    parsed = loads(response_text)
-    img_url = parsed["url"]
-    result = f"{user.mention}[))))]({img_url})  <3"
-    await reply(ctx, result)
-
 @bot.tree.command(description="Send a random categorized sfw image")
 @app_commands.choices(
     category=[
@@ -543,8 +531,9 @@ async def get_response(url: str) -> str:
             return await response.text()
 
 async def translate_text(text: str, target_language: str) -> str:
-    result = await translator.translate(text[:2000],
-                                        targetlang=target_language)
+    result = await translator.translate(
+        text[:2000],
+        targetlang=target_language)
     return result
 
 async def defer(ctx: Interaction) -> None:
@@ -560,6 +549,6 @@ async def reply(
     if defer:
         await ctx.followup.send(result)
     else:
-        await ctx.response.send_message(result)
+        await ctx.response.send_message(result, silent=True)
 
 bot.run(environ["TOKEN"])
