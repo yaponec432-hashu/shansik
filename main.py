@@ -75,8 +75,8 @@ async def on_message(message: Message) -> None:
                         timeout=2)
                 except TimeoutError:
                     content = (
-                        f"New room code: **`{new_name}`**\n"
-                        "*use %rm code to change the channel name*"
+                        f"New room code: **`{new_name}`**"
+                        "\n*use %rm code to change the channel name*"
                     )
                 except Forbidden:
                     content = "U menya net prav"
