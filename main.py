@@ -183,11 +183,11 @@ async def check_api(ctx: Interaction) -> None:
 
 @bot.tree.command(description="Get a value for compare ISVs")
 @app_commands.describe(
-    leader_skill="Your team leader skill",
-    team_skill="Your total team skill, including the leader"
+    leader_boost="Your team leader score boost",
+    team_boost="Your total team score boost, including the leader"
 )
-async def isv(ctx, leader_skill: int, team_skill: int) -> None:
-    result = leader_skill*4 + team_skill - 90
+async def isv(ctx, leader_boost: int, team_boost: int) -> None:
+    result = leader_boost*4 + team_boost - 90
     await reply(ctx, result)
 
 @bot.tree.command(description="Convert UTC to a discord timestamp")
