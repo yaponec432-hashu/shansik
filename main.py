@@ -331,7 +331,10 @@ async def length(ctx: Interaction, text: str) -> None:
     await reply(ctx, result)
 
 @bot.tree.command(description="Translate the text")
-@app_commands.describe(text="Set the text for translation")
+@app_commands.describe(
+    text="Set the text for translation"
+    target_language="Set the target language, like en or ja"
+)
 async def translate(ctx: Interaction, text: str, target_language: str) -> None:
     result = await translate_text(text[:2000], target_language)
     await reply(ctx, result)
