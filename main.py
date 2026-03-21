@@ -264,7 +264,7 @@ async def rgb_to_hex(
 @app_commands.describe(hex_color="Set the hex color, like #33ccbb")
 async def hex_to_rgb(ctx: Interaction, hex_color: str) -> None:
     hex_color = hex_color.lstrip("#")
-    if match(r"^[0-9a-fA-F]+$", hex):
+    if match(r"^[0-9a-fA-F]+$", hex_color):
         red = int(hex_color[0:2], 16)
         green = int(hex_color[2:4], 16)
         blue = int(hex_color[4:6], 16)
@@ -368,7 +368,7 @@ async def wikipedia_search(
     await reply(ctx, result, True)
 
 @bot.tree.command(description="calculator")
-@app_commands.describe(expression="Set a math expression, like 2+2")
+@app_commands.describe(expression="Set a math expression, like 2 + 2")
 async def calculate(ctx: Interaction, expression: str) -> None:
     result = simple_eval(expression)
     await reply(ctx, result)
