@@ -22,9 +22,11 @@ from discord import (
     Forbidden
 )
 
-HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-           " AppleWebKit/537.36 (KHTML, like Gecko)"
-           " Chrome/100.0.4896.127 Safari/537.36"}
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127"
+    " Safari/537.36"
+}
 MANAGER_ROLES = {
     1470549658454458471: "Раннер ростера",
     1316002183895973979: "Менеджер",
