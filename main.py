@@ -131,7 +131,7 @@ async def guy_id(ctx: Interaction, guy: Member) -> None:
 )
 async def guy_name(ctx: Interaction, guy: Member) -> None:
     name = guy.global_name
-    result = name if name else "_Хз безмамный чел."
+    result = name if name else "_Чел без ника"
     await reply(ctx, result)
 
 @bot.tree.command(description="Найти аву чела")
