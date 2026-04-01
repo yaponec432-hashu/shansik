@@ -6,7 +6,6 @@ dependencies = [
     "charset_normalizer>=3.4.4",
     "discord.py[speed]>=2.6.4",
     "aiohttp>=3.13.3",
-    "wikipedia>=1.4.0",
     "simpleeval>=1.0.3",
     "gpytranslate>=2.1.0"
 ]
