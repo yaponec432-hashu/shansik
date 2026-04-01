@@ -1,6 +1,7 @@
 name: namaz
 on:
   schedule:
+    - workflow_dispatch:
     - cron: "49 * * * *"
 concurrency:
   group: ci-${{ github.workflow }}
