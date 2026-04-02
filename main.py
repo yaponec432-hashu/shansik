@@ -50,7 +50,7 @@ class GoidaBot(Client):
         self.session: ClientSession = None
 
     async def setup_hook(self) -> None:
-        await self.tree.sync()
+        #await self.tree.sync()
         self.session = ClientSession()
 
     async def close(self) -> None:
