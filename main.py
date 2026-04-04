@@ -25,7 +25,7 @@ class GoidaBot(Client):
     def __init__(self) -> None:
         intents = Intents.default()
         intents.message_content = True
-        activity = Game(name="Форсакен", platform="Ubuntu Linux")
+        activity = Game(name="Форсакен")
         super().__init__(
             intents=intents,
             help_command=None,
