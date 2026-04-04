@@ -28,3 +28,4 @@ jobs:
         run: uv run ./main_test.py
         env:
           BOT_TOKEN: ${{ secrets.TOKEN }}
+          SYNC_BOT: "1"
