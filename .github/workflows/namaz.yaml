@@ -2,7 +2,7 @@ name: namaz
 on:
   workflow_dispatch:
   schedule:
-    - cron: "44 * * * *"
+    - cron: '44 * * * *'
 concurrency:
   group: ci-${{ github.workflow }}
   cancel-in-progress: true
@@ -19,7 +19,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.14"
+          python-version: '3.14'
 
       - name: Install uv
         run: bash -c "$(curl -Lfs https://astral.sh/uv/install.sh)"
@@ -27,5 +27,5 @@ jobs:
       - name: Run python
         run: uv run ./main_test.py
         env:
-          BOT_TOKEN: ${{ secrets.TOKEN }}
-          SYNC_BOT: "1"
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          SYNC_BOT: '0'
