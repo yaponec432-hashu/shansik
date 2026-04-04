@@ -11,6 +11,7 @@ from discord import (
     app_commands,
     Intents,
     Client,
+    Game,
     Interaction,
     TextChannel,
     ClientUser,
@@ -24,16 +25,17 @@ class GoidaBot(Client):
     def __init__(self) -> None:
         intents = Intents.default()
         intents.message_content = True
+        activity = Game(name="Форсакен", platform="Ubuntu Linux")
         super().__init__(
             intents=intents,
             help_command=None,
+            activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
         self.channel_name_regex = compile(r"(^.[0-9]*-)[0-9x]{5}(-[1-5])?$")
         self.sekai_code_regex = compile(r"^[0-9x]{5}$")
         self.manager_roles = {
-            1474385106146955297,
             1470549658454458471,  # Раннер ростера
             1316002183895973979,  # Менеджер
             1316002661895508058  # Интерн
@@ -146,7 +148,7 @@ async def calculate(expression: str) -> str:
     try:
         result = simple_eval(expression.replace(",", ""))
     except Exception:
-        result = "По понятиям пиши, вотак вот: 1+4+8+8"
+        result = "По понятиям пиши, вотак вот: 1*4/8**8 + (5-2)"
     return result
 
 async def translate(source_text: str, target_language: str) -> str:
