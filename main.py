@@ -3,7 +3,7 @@
 """A discord bot."""
 
 from asyncio import wait_for, TimeoutError
-from re import compile, match
+from re import compile
 from os import environ
 from gpytranslate import Translator, TranslationError
 from simpleeval import simple_eval
@@ -33,6 +33,7 @@ class GoidaBot(Client):
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
+        self.sekai_code_len = 5
         self.channel_name_regex = compile(r"(^.[0-9]*-)[0-9x]{5}(-[1-5])?$")
         self.sekai_code_regex = compile(r"^[0-9x]{5}$")
         self.manager_roles = {
@@ -48,10 +49,12 @@ class GoidaBot(Client):
     async def on_message(self, message: Message) -> None:
         author = message.author
         if author.id != self.user.id:
-            message_text = message.content
+            message_text = message.content[:self.sekai_code_len]
+            is_sekai_code = self.sekai_code_regex.match(message_text)
             if (
-                any(role.id in self.manager_roles for role in author.roles)
-                and self.sekai_code_regex.match(message_text)
+                is_sekai_code
+                and any(
+                    role.id in self.manager_roles for role in author.roles)
             ):
                 channel = message.channel
                 channel_name = channel.name
@@ -123,8 +126,7 @@ async def member_name(ctx: Interaction, member: Member) -> None:
     member="Чел"
 )
 async def member_avatar(ctx: Interaction, member: Member) -> None:
-    avatar = member.display_avatar
-    result = avatar if avatar else "Гений без авы"
+    result = member.display_avatar
     await reply(ctx, result)
 
 @bot.tree.command(description="Калькулятор")
