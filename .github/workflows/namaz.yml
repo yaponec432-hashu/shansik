@@ -1,5 +1,6 @@
 name: namaz
 on:
+  workflow_dispatch:
   schedule:
     - cron: "44 * * * *"
 concurrency:
@@ -18,12 +19,12 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
 
       - name: Install uv
         run: bash -c "$(curl -Lfs https://astral.sh/uv/install.sh)"
 
       - name: Run python
-        run: uv run ./main.py
+        run: uv run ./main_test.py
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          BOT_TOKEN: ${{ secrets.TOKEN }}
