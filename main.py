@@ -92,7 +92,7 @@ async def translate_into_russian(ctx: Interaction, message: Message) -> None:
 @bot.tree.context_menu(name="Посчитать")
 async def context_calculator(ctx: Interaction, message: Message) -> None:
     result = await calculate(message.content)
-    await reply(ctx, result)
+    await reply(ctx, result, True)
 
 @bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
 @app_commands.describe(
