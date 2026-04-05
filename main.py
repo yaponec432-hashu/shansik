@@ -33,8 +33,8 @@ class GoidaBot(Client):
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
-        self.channel_name_regex = compile(r"(^.[0-9]*-)[0-9x]{5}(-[1-5])?$")
-        self.sekai_code_regex = compile(r"^[0-9x]{5}$")
+        self.channel_name_regex = compile(r"^(g\d-)(\d{5}|xxxxx)(-[1-5])?$")
+        self.sekai_code_regex = compile(r"^(\d{5}|xxxxx)$")
         self.manager_roles = {
             1470549658454458471,  # Раннер ростера
             1316002183895973979,  # Менеджер
@@ -47,33 +47,29 @@ class GoidaBot(Client):
 
     async def on_message(self, message: Message) -> None:
         author = message.author
-        if author.id != self.user.id:
-            message_text = message.content
-            is_sekai_code = self.sekai_code_regex.match(message_text)
-            if (
-                is_sekai_code
-                and any(
-                    role.id in self.manager_roles for role in author.roles)
-            ):
-                channel = message.channel
-                channel_name = channel.name
-                channel_match = self.channel_name_regex.match(channel_name)
-                if channel_match:
-                    prefix = channel_match.group(1)
-                    name = prefix + message_text
-                    try:
-                        content = f"~~{channel_name}~~ ➔ **`{name}`**"
-                        reason = "старый код румы был депнут в казик"
-                        await wait_for(
-                            channel.edit(name=name, reason=reason),
-                            timeout=2)
-                    except TimeoutError:
-                        content = (
-                            f"Новый код румы: **`{name}`**\n> Юзни `%rm code`"
-                        )
-                    except Forbidden:
-                        content = "**У меня нет прав** на управление каналами"
-                    await message.reply(content=content, mention_author=False)
+        if author.id == self.user.id:
+            return
+        message_text = message.content
+        channel = message.channel
+        channel_name = channel.name
+        if not (
+            type(channel) is TextChannel
+            and self.sekai_code_regex.match(message_text)
+            and (channel_match := self.channel_name_regex.match(channel_name))
+            and any(role.id in self.manager_roles for role in author.roles)
+        ):
+            return
+        prefix = channel_match.group(1)
+        name = prefix + message_text
+        try:
+            content = f"~~{channel_name}~~ ➔ **`{name}`**"
+            reason = "старый код румы был депнут в казик"
+            await wait_for(channel.edit(name=name, reason=reason), timeout=2)
+        except TimeoutError:
+            content = f"Новый код румы: **`{name}`**\n> Юзни `%rm code`"
+        except Forbidden:
+            content = "**У меня нет прав** на управление каналами"
+        await message.reply(content=content, mention_author=False)
 
 bot = GoidaBot()
 
@@ -177,4 +173,5 @@ async def reply(
     else:
         await ctx.response.send_message(result, silent=silent)
 
-bot.run(environ["BOT_TOKEN"])
+if __name__ == "__main__":
+    bot.run(environ["BOT_TOKEN"])
