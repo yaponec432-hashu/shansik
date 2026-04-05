@@ -3,14 +3,16 @@ on:
   schedule:
     - cron: '30 */2 * * *'
       #timezone: 'Europe/Moscow'
+
 concurrency:
   group: ci-${{ github.workflow }}
   cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
-  halal:
+  run-bot:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
