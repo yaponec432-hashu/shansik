@@ -33,7 +33,6 @@ class GoidaBot(Client):
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
-        self.sekai_code_len = 5
         self.channel_name_regex = compile(r"(^.[0-9]*-)[0-9x]{5}(-[1-5])?$")
         self.sekai_code_regex = compile(r"^[0-9x]{5}$")
         self.manager_roles = {
@@ -49,7 +48,7 @@ class GoidaBot(Client):
     async def on_message(self, message: Message) -> None:
         author = message.author
         if author.id != self.user.id:
-            message_text = message.content[:self.sekai_code_len]
+            message_text = message.content
             is_sekai_code = self.sekai_code_regex.match(message_text)
             if (
                 is_sekai_code
