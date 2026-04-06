@@ -47,13 +47,12 @@ class GoidaBot(Client):
 
     async def on_message(self, message: Message) -> None:
         author = message.author
-        if author.id == self.user.id:
-            return
         message_text = message.content
         channel = message.channel
         channel_name = channel.name
         if not (
             type(channel) is TextChannel
+            and author.id != self.user.id
             and self.sekai_code_regex.match(message_text)
             and (channel_match := self.channel_name_regex.match(channel_name))
             and any(role.id in self.manager_roles for role in author.roles)
