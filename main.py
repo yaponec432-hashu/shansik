@@ -42,7 +42,7 @@ class GoidaBot(Client):
         }
 
     async def setup_hook(self) -> None:
-        if environ["SYNC_BOT"] == "1":
+        if environ["BOT_SYNC_ENABLED"] == "1":
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
