@@ -53,8 +53,8 @@ class GoidaBot(Client):
         if not (
             type(channel) is TextChannel
             and author.id != self.user.id
-            and len(message_text) == self.sekai_code_len
-            and message_text.isdigit()
+            and len(message_text) != self.sekai_code_len
+            and not message_text.isdigit()
             and (channel_match := self.channel_name_regex.match(channel_name))
             and any(role.name in self.manager_roles for role in author.roles)
         ):
