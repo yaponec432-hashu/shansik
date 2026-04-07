@@ -36,9 +36,9 @@ class GoidaBot(Client):
         self.channel_name_regex = compile(r"^(g\d-)(\d{5}|xxxxx)(-[1-5])?$")
         self.sekai_code_regex = compile(r"^(\d{5}|xxxxx)$")
         self.manager_roles = {
-            1470549658454458471,  # Раннер ростера
-            1316002183895973979,  # Менеджер
-            1316002661895508058  # Интерн
+            "Раннер ростера",
+            "Менеджер",
+            "Интерн"
         }
 
     async def setup_hook(self) -> None:
@@ -55,7 +55,7 @@ class GoidaBot(Client):
             and author.id != self.user.id
             and self.sekai_code_regex.match(message_text)
             and (channel_match := self.channel_name_regex.match(channel_name))
-            and any(role.id in self.manager_roles for role in author.roles)
+            and any(role.name in self.manager_roles for role in author.roles)
         ):
             return
         prefix = channel_match.group(1)
