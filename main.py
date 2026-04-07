@@ -34,7 +34,7 @@ class GoidaBot(Client):
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
         self.channel_name_regex = compile(r"^(g\d-)(\d{5}|xxxxx)(-[1-5])?$")
-        self.sekai_code_regex = compile(r"^(\d{5}|xxxxx)$")
+        self.sekai_code_len = 5
         self.manager_roles = {
             "Раннер ростера",
             "Менеджер",
@@ -53,7 +53,8 @@ class GoidaBot(Client):
         if not (
             type(channel) is TextChannel
             and author.id != self.user.id
-            and self.sekai_code_regex.match(message_text)
+            and len(message_text) == self.sekai_code_len
+            and message_text.isdigit()
             and (channel_match := self.channel_name_regex.match(channel_name))
             and any(role.name in self.manager_roles for role in author.roles)
         ):
