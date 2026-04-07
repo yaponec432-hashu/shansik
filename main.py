@@ -46,8 +46,8 @@ class GoidaBot(Client):
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
-        author = message.author
         message_text = message.content
+        author = message.author
         channel = message.channel
         channel_name = channel.name
         if not (
