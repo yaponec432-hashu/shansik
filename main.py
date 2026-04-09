@@ -51,10 +51,10 @@ class GoidaBot(Client):
         channel = message.channel
         channel_name = channel.name
         if not (
-            await is_human_in_text_channel(author, channel)
-            and await is_sekai_code(message_text)
-            and (prefix := await get_room_prefix(channel_name))
-            and await is_manager(author)
+            is_human_in_text_channel(author, channel)
+            and is_sekai_code(message_text)
+            and (prefix := get_room_prefix(channel_name))
+            and is_manager(author)
         ):
             return
         name = f"{prefix}-{message_text}"
@@ -127,25 +127,14 @@ async def check_bot(ctx: Interaction) -> None:
     result = "Гойда"
     await reply(ctx, result)
 
-async def translate(source_text: str, target_language: str) -> str:
-    translator = Translator()
-    try:
-        translation = await translator.translate(
-            source_text[:bot.max_message_len],
-            targetlang=target_language)
-        result = translation.text
-    except TranslationError:
-        result = "*Translation error, try again*"
-    return result
-
-async def is_human_in_text_channel(
+def is_human_in_text_channel(
     author: Member,
     channel: Messageable
 ) -> bool:
     result = not author.bot and type(channel) is TextChannel
     return result
 
-async def get_room_prefix(channel_name: str) -> str:
+def get_room_prefix(channel_name: str) -> str:
     prefix = ""
     if (
         len(channel_name) == bot.channel_name_len
@@ -158,12 +147,23 @@ async def get_room_prefix(channel_name: str) -> str:
         prefix += channel_name.split("-")[0]
     return prefix
 
-async def is_sekai_code(text: str) -> bool:
+def is_sekai_code(text: str) -> bool:
     result = len(text) == bot.sekai_code_len and text.isdigit()
     return result
 
-async def is_manager(author: Member) -> bool:
+def is_manager(author: Member) -> bool:
     result = any(role.name in bot.manager_roles for role in author.roles)
+    return result
+
+async def translate(source_text: str, target_language: str) -> str:
+    translator = Translator()
+    try:
+        translation = await translator.translate(
+            source_text[:bot.max_message_len],
+            targetlang=target_language)
+        result = translation.text
+    except TranslationError:
+        result = "*Translation error, try again*"
     return result
 
 async def reply(
