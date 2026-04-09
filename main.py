@@ -33,7 +33,7 @@ class GoidaBot(Client):
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
         self.max_message_len = 2000
-        self.channel_name_regex = compile(r"^(g\d-)(\d{5}|xxxxx)(-[1-5])?$")
+        self.channel_name_len = 8
         self.sekai_code_len = 5
         self.manager_roles = {
             "Раннер ростера",
@@ -53,14 +53,13 @@ class GoidaBot(Client):
         if not (
             await is_human_in_text_channel(author, channel)
             and await is_sekai_code(message_text)
-            and (channel_match := self.channel_name_regex.match(channel_name))
+            and (prefix := await get_room_prefix(channel_name))
             and await is_manager(author)
         ):
             return
-        prefix = channel_match.group(1)
-        name = prefix + message_text
+        name = f"{prefix}-{message_text}"
+        content = f"~~{channel_name}~~ ➔ **`{name}`**"
         try:
-            content = f"~~{channel_name}~~ ➔ **`{name}`**"
             reason = "старый код румы был депнут в казик"
             await wait_for(channel.edit(name=name, reason=reason), timeout=2)
         except TimeoutError:
@@ -146,6 +145,19 @@ async def is_human_in_text_channel(
     result = not author.bot and type(channel) is TextChannel
     return result
 
+async def get_room_prefix(channel_name: str) -> str:
+    prefix = ""
+    if (
+        len(channel_name) == bot.channel_name_len
+        and channel_name.startswith("g")
+        and channel_name[1].isdigit()
+        and channel_name[2] == "-"
+        and channel_name[-1].isdigit()
+        or channel_name.endswith("x")
+    ):
+        prefix += channel_name.split("-")[0]
+    return prefix
+
 async def is_sekai_code(text: str) -> bool:
     result = len(text) == bot.sekai_code_len and text.isdigit()
     return result
@@ -156,7 +168,7 @@ async def is_manager(author: Member) -> bool:
 
 async def reply(
     ctx: Interaction,
-    result: str | int | float,
+    result: str | int,
     defer: bool = False,
     silent: bool = False
 ) -> None:
