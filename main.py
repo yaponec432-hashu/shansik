@@ -34,11 +34,7 @@ class GoidaBot(Client):
         self.max_message_len = 2000
         self.channel_name_len = 8
         self.sekai_code_len = 5
-        self.manager_roles = {
-            "Раннер ростера",
-            "Менеджер",
-            "Интерн"
-        }
+        self.manager_roles = {"Раннер ростера", "Менеджер", "Интерн"}
 
     async def setup_hook(self) -> None:
         if environ["BOT_SYNC_ENABLED"] == "1":
