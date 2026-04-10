@@ -141,10 +141,9 @@ def get_room_prefix(channel_name: str) -> str:
         len(channel_name) == bot.channel_name_len
         and channel_name.startswith(bot.room_letter)
         and channel_name[2] == "-"
+        and (room_number := channel_name[1]).isdecimal()
     ):
-        room_number = channel_name[1]
-        if room_number.isdecimal():
-            prefix += f"{bot.room_letter}{room_number}-"
+        prefix += f"{bot.room_letter}{room_number}-"
     return prefix
 
 def is_sekai_code(text: str) -> bool:
