@@ -140,14 +140,15 @@ def get_room_prefix(channel_name: str) -> str:
     if (
         len(channel_name) == bot.channel_name_len
         and channel_name.startswith(bot.room_letter)
-        and (room_number := channel_name[1].isdigit())
         and channel_name[2] == "-"
     ):
-        prefix += f"{bot.room_letter}{room_number}-"
+        room_number = channel_name[1]
+        if room_nubmer.isdecimal():
+            prefix += f"{bot.room_letter}{room_number}-"
     return prefix
 
 def is_sekai_code(text: str) -> bool:
-    result = len(text) == bot.sekai_code_len and text.isdigit()
+    result = len(text) == bot.sekai_code_len and text.isdecimal()
     return result
 
 def is_manager(author: Member) -> bool:
