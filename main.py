@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: 0BSD
 """A discord bot."""
 
-from asyncio import wait_for, TimeoutError
-from re import compile
-from os import getenv
+from asyncio import wait_for
+from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
 from discord import (
@@ -42,7 +41,7 @@ class GoidaBot(Client):
         }
 
     async def setup_hook(self) -> None:
-        if getenv("BOT_SYNC_ENABLED") == "1":
+        if environ["BOT_SYNC_ENABLED"] == "1":
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
@@ -61,7 +60,7 @@ class GoidaBot(Client):
         content = f"~~{channel_name}~~ ➔ **`{name}`**"
         try:
             reason = "старый код румы был депнут в казик"
-            await wait_for(channel.edit(name=name, reason=reason), timeout=2)
+            await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
         except TimeoutError:
             content = f"Новый код румы: **`{name}`**\n> Юзни `%rm code`"
         except Forbidden:
@@ -181,4 +180,4 @@ async def reply(
         await ctx.response.send_message(result, silent=silent)
 
 if __name__ == "__main__":
-    bot.run(getenv("BOT_TOKEN"))
+    bot.run(environ["BOT_TOKEN"])
