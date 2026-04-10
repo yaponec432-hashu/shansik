@@ -52,7 +52,7 @@ class GoidaBot(Client):
             and is_manager(author)
         ):
             return
-        name = f"{prefix}-{message_text}"
+        name = prefix + message_text
         content = f"~~{channel_name}~~ ➔ **`{name}`**"
         try:
             reason = "старый код румы был депнут в казик"
@@ -130,16 +130,15 @@ def is_human_in_text_channel(
     return result
 
 def get_room_prefix(channel_name: str) -> str:
+    room_letter = "g"
     prefix = ""
     if (
         len(channel_name) == bot.channel_name_len
-        and channel_name.startswith("g")
+        and channel_name.startswith(room_letter)
         and channel_name[1].isdigit()
         and channel_name[2] == "-"
-        and channel_name[-1].isdigit()
-        or channel_name.endswith("x")
     ):
-        prefix += channel_name.split("-")[0]
+        prefix += f"{room_letter}{room_number}-"
     return prefix
 
 def is_sekai_code(text: str) -> bool:
