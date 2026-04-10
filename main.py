@@ -34,6 +34,7 @@ class GoidaBot(Client):
         self.max_message_len = 2000
         self.channel_name_len = 8
         self.sekai_code_len = 5
+        self.room_letter = "g"
         self.manager_roles = {"Раннер ростера", "Менеджер", "Интерн"}
 
     async def setup_hook(self) -> None:
@@ -130,15 +131,14 @@ def is_human_in_text_channel(
     return result
 
 def get_room_prefix(channel_name: str) -> str:
-    room_letter = "g"
     prefix = ""
     if (
         len(channel_name) == bot.channel_name_len
-        and channel_name.startswith(room_letter)
+        and channel_name.startswith(bot.room_letter)
         and (room_number := channel_name[1].isdigit())
         and channel_name[2] == "-"
     ):
-        prefix += f"{room_letter}{room_number}-"
+        prefix += f"{bot.room_letter}{room_number}-"
     return prefix
 
 def is_sekai_code(text: str) -> bool:
