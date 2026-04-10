@@ -143,7 +143,7 @@ def get_room_prefix(channel_name: str) -> str:
         and channel_name[2] == "-"
     ):
         room_number = channel_name[1]
-        if room_nubmer.isdecimal():
+        if room_number.isdecimal():
             prefix += f"{bot.room_letter}{room_number}-"
     return prefix
 
