@@ -6,7 +6,6 @@ from asyncio import wait_for
 from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
-from simpleeval import simple_eval
 from discord import (
     app_commands,
     Intents,
@@ -19,6 +18,7 @@ from discord import (
     Member,
     Forbidden
 )
+import simpleeval
 
 class GoidaBot(Client):
     user: ClientUser
@@ -143,7 +143,8 @@ async def check_bot(ctx: Interaction) -> None:
 def calculate(expression: str) -> str:
     if len(expression) <= 32:
         try:
-            result = simple_eval(expression.replace(",", ""))
+            simpleeval.MAX_POWER = 8
+            result = simpleeval.simple_eval(expression.replace(",", ""))
         except Exception:
             result = "По понятиям пиши, вотак вот: 1*4/8-8"
     else:
