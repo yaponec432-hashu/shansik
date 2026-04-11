@@ -6,6 +6,7 @@ from asyncio import wait_for
 from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
+from simpleeval import simple_eval
 from discord import (
     app_commands,
     Intents,
@@ -83,6 +84,11 @@ async def translate_into_russian(ctx: Interaction, message: Message) -> None:
     result = await translate(message.content, "ru")
     await reply(ctx, result, True)
 
+@bot.tree.context_menu(name="Посчитать")
+async def context_calculator(ctx: Interaction, message: Message) -> None:
+    result = calculate(message.content)
+    await reply(ctx, result, True)
+
 @bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
 @app_commands.describe(
     leader_boost="Скор буст лидера",
@@ -123,10 +129,26 @@ async def length(ctx: Interaction, text: str) -> None:
     result = len(text)
     await reply(ctx, result)
 
+@bot.tree.command(description="Калькулятор")
+@app_commands.describe(expression="Напиши выражение, типа 2+2")
+async def calculator(ctx: Interaction, expression: str) -> None:
+    result = calculate(expression)
+    await reply(ctx, result)
+
 @bot.tree.command(description="Проверить жив ли бот")
 async def check_bot(ctx: Interaction) -> None:
     result = "Гойда"
     await reply(ctx, result)
+
+def calculate(expression: str) -> str:
+    if len(expression) <= 32:
+        try:
+            result = simple_eval(expression.replace(",", ""))
+        except Exception:
+            result = "По понятиям пиши, вотак вот: 1*4/8-8"
+    else:
+        result = "Длинное выражение"
+    return result
 
 def is_human_in_text_channel(
     author: Member,
@@ -167,7 +189,7 @@ async def translate(source_text: str, target_language: str) -> str:
 
 async def reply(
     ctx: Interaction,
-    result: str | int,
+    result: str | int | float | bool,
     defer: bool = False,
     silent: bool = False
 ) -> None:
