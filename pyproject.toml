@@ -4,5 +4,6 @@ version = "1.0.0"
 requires-python = ">=3.13"
 dependencies = [
     "discord.py[speed]>=2.6.4",
-    "gpytranslate>=2.1.0"
+    "gpytranslate>=2.1.0",
+    "simpleeval>=1.0.3"
 ]
