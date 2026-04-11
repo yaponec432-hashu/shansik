@@ -139,7 +139,7 @@ def get_room_prefix(channel_name: str) -> str:
     prefix = ""
     if (
         len(channel_name) == bot.channel_name_len
-        and channel_name.startswith(bot.room_letter)
+        and channel_name[0] == bot.room_letter
         and channel_name[2] == "-"
         and (room_number := channel_name[1]).isdecimal()
     ):
