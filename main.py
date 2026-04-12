@@ -86,6 +86,7 @@ async def translate_into_russian(ctx: Interaction, message: Message) -> None:
 
 @bot.tree.context_menu(name="Посчитать")
 async def context_calculator(ctx: Interaction, message: Message) -> None:
+    await ctx.response.defer(ephemeral=True)
     result = calculate(message.content)
     await reply(ctx, result, True)
 
