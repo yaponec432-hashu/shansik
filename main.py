@@ -23,9 +23,9 @@ import simpleeval
 class GoidaBot(Client):
     user: ClientUser
     def __init__(self) -> None:
+        activity = Game("Форсакен")
         intents = Intents.default()
         intents.message_content = True
-        activity = Game(name="Форсакен")
         super().__init__(
             intents=intents,
             help_command=None,
