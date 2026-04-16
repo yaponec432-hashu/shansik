@@ -90,6 +90,45 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
     result = calculate(message.content)
     await reply(ctx, result, True)
 
+@bot.tree.command(description="Скока времени сливать банки")
+@app_commands.choices(
+    song_duration=[
+        app_commands.Choice(name="Envy", value=74.8),
+        app_commands.Choice(name="Sage", value=150.7),
+        app_commands.Choice(name="LNF", value=156.2),
+        app_commands.Choice(name="Fire dance", value=91.4)
+    ],
+    energy_multiplier = [
+        app_commands.Choice(name="1x", value=1),
+        app_commands.Choice(name="2x", value=2),
+        app_commands.Choice(name="3x", value=3),
+        app_commands.Choice(name="4x", value=4),
+        app_commands.Choice(name="5x", value=5),
+        app_commands.Choice(name="6x", value=6),
+        app_commands.Choice(name="7x", value=7),
+        app_commands.Choice(name="8x", value=8),
+        app_commands.Choice(name="9x", value=9),
+        app_commands.Choice(name="10x", value=10)
+    ]
+)
+@app_commands.describe(
+    song_duration="Какую песенку сосем",
+    energy_count="Скока банок надо слить",
+    energy_multiplier="Множитель банок"
+)
+async def energy(
+    ctx: Interaction,
+    song_duration: float,
+    energy_count: int,
+    energy_multiplier: int
+) -> None:
+    games_count = int(energy_count/energy_multiplier)
+    seconds = song_duration * games_count
+    minutes = round(seconds/60, 1)
+    hours = round(minutes/60, 1)
+    result = f"{minutes} минут | {hours} часов"
+    await reply(ctx, result)
+
 @bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
 @app_commands.describe(
     leader_boost="Скор буст лидера",
