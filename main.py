@@ -118,6 +118,7 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
     gph="Игр в час"
 )
 async def energy(
+    ctx: Interaction,
     energy_count: int,
     energy_multiplier: int,
     song_duration: int = 0,
