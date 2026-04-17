@@ -122,10 +122,10 @@ async def energy(
     energy_count: int,
     energy_multiplier: int
 ) -> None:
-    games_count = int(energy_count/energy_multiplier)
+    games_count = energy_count // energy_multiplier
     delay = 75  # With GPH 24 on envy
     total_seconds = (song_duration + delay) * games_count
-    total_minutes = int(total_seconds/60)
+    total_minutes = total_seconds // 60
     minutes = total_minutes % 60
     hours = total_minutes // 60
     result = f"{total_minutes} минут | {hours} часов, {minutes} минут"
