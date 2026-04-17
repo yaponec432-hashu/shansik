@@ -93,10 +93,10 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
 @bot.tree.command(description="Скока времени сливать банки")
 @app_commands.choices(
     song_duration=[
-        app_commands.Choice(name="Envy", value=74.8),
-        app_commands.Choice(name="Sage", value=150.7),
-        app_commands.Choice(name="LNF", value=156.2),
-        app_commands.Choice(name="Fire dance", value=91.4)
+        app_commands.Choice(name="Envy", value=74),
+        app_commands.Choice(name="Sage", value=150),
+        app_commands.Choice(name="LNF", value=156),
+        app_commands.Choice(name="Fire dance", value=91)
     ],
     energy_multiplier = [
         app_commands.Choice(name="1x", value=1),
@@ -118,15 +118,17 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
 )
 async def energy(
     ctx: Interaction,
-    song_duration: float,
+    song_duration: int,
     energy_count: int,
     energy_multiplier: int
 ) -> None:
     games_count = int(energy_count/energy_multiplier)
-    seconds = song_duration * games_count
-    minutes = round(seconds/60, 1)
-    hours = round(minutes/60, 1)
-    result = f"{minutes} минут | {hours} часов"
+    delay = 75  # With GPH 24 on envy
+    total_seconds = (song_duration + delay) * games_count
+    total_minutes = int(total_seconds/60)
+    minutes = total_minutes % 60
+    hours = total_minutes // 60
+    result = f"{total_minutes} минут | {hours} часов, {minutes} минут"
     await reply(ctx, result)
 
 @bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
