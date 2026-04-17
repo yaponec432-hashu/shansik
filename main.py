@@ -89,15 +89,9 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
     await ctx.response.defer(ephemeral=True)
     result = calculate(message.content)
     await reply(ctx, result, True)
-
 @bot.tree.command(description="Скока времени сливать банки")
+
 @app_commands.choices(
-    song_duration=[
-        app_commands.Choice(name="Envy", value=74),
-        app_commands.Choice(name="Sage", value=150),
-        app_commands.Choice(name="LNF", value=156),
-        app_commands.Choice(name="Fire dance", value=91)
-    ],
     energy_multiplier = [
         app_commands.Choice(name="1x", value=1),
         app_commands.Choice(name="2x", value=2),
@@ -109,26 +103,38 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
         app_commands.Choice(name="8x", value=8),
         app_commands.Choice(name="9x", value=9),
         app_commands.Choice(name="10x", value=10)
+    ],
+    song_duration=[
+        app_commands.Choice(name="Envy", value=74),
+        app_commands.Choice(name="Sage", value=150),
+        app_commands.Choice(name="LNF", value=156),
+        app_commands.Choice(name="Fire dance", value=91)
     ]
 )
 @app_commands.describe(
-    song_duration="Какую песенку сосем",
     energy_count="Скока банок надо слить",
-    energy_multiplier="Множитель банок"
+    energy_multiplier="Множитель банок",
+    song_duration="Какую песенку сосем",
+    gph="Скоростность"
 )
 async def energy(
-    ctx: Interaction,
-    song_duration: int,
     energy_count: int,
-    energy_multiplier: int
+    energy_multiplier: int,
+    song_duration: int = 0,
+    gph: int = 0
 ) -> None:
     games_count = energy_count // energy_multiplier
-    delay = 75  # With GPH 24 on envy
-    total_seconds = (song_duration + delay) * games_count
-    total_minutes = total_seconds // 60
-    minutes = total_minutes % 60
-    hours = total_minutes // 60
-    result = f"{total_minutes} минут | {hours} часов, {minutes} минут"
+    if song_duration: 
+        total_seconds = song_duration*(games_count + 1)
+    elif gph:
+        total_seconds = 3600//gph * games_count
+    if total_seconds:
+        total_minutes = total_seconds // 60
+        minutes = total_minutes % 60
+        hours = total_minutes // 60
+        result = f"{total_minutes} минут | {hours} часов, {minutes} минут"
+    else:
+        result = "Выбери либо песенку либо гпх"
     await reply(ctx, result)
 
 @bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
