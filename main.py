@@ -89,8 +89,8 @@ async def context_calculator(ctx: Interaction, message: Message) -> None:
     await ctx.response.defer(ephemeral=True)
     result = calculate(message.content)
     await reply(ctx, result, True)
-@bot.tree.command(description="Скока времени сливать банки")
 
+@bot.tree.command(description="Скока времени сливать банки")
 @app_commands.choices(
     energy_multiplier = [
         app_commands.Choice(name="1x", value=1),
