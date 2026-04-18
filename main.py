@@ -7,9 +7,9 @@ from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
 from discord import (
-    AutoShardedClient,
     app_commands,
     Intents,
+    Client,
     Game,
     Interaction,
     TextChannel,
@@ -20,15 +20,13 @@ from discord import (
 )
 import simpleeval
 
-class GoidaBot(AutoShardedClient):
+class GoidaBot(Client):
     user: ClientUser
     def __init__(self) -> None:
         activity = Game("Форсакен")
         intents = Intents.default()
         intents.message_content = True
         super().__init__(
-            shard_id=1,
-            shard_count=2,
             intents=intents,
             activity=activity,
             chunk_guilds_at_startup=False)
