@@ -71,6 +71,14 @@ class GoidaBot(AutoShardedClient):
 
 bot = GoidaBot()
 
+@bot.tree.context_menu(name="Перевести с Кристальского")
+async def translate_from_crystalian(ctx: Interaction, message: Message) -> None:
+    qwerty = "qwertyuiop[]asdfghjkl;'zxcvbnm,./QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>?"
+    russian = "йцукенгшщзхъфывапролджэячсмитьбю.ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,"
+    table = str.maketrans(qwerty, russian)
+    result = message.content.translate(table)
+    await reply(ctx, result)
+
 @bot.tree.context_menu(name="Translate into English")
 async def translate_into_english(ctx: Interaction, message: Message) -> None:
     await ctx.response.defer(ephemeral=True)
