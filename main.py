@@ -200,7 +200,7 @@ async def calculator(ctx: Interaction, expression: str) -> None:
 
 @bot.tree.command(description="Проверить жив ли бот")
 async def check_bot(ctx: Interaction) -> None:
-    result = bot.shard_count
+    result = "Гойда"
     await reply(ctx, result)
 
 def calculate(expression: str) -> str:
