@@ -28,7 +28,6 @@ class GoidaBot(AutoShardedClient):
         intents.message_content = True
         super().__init__(
             intents=intents,
-            help_command=None,
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
