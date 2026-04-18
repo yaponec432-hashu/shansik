@@ -1,12 +1,11 @@
 name: namaz
 on:
-  workflow_dispatch:
   schedule:
     - cron: '29 * * * *'
 
-#concurrency:
-#  group: ci-${{ github.workflow }}
-#  cancel-in-progress: true
+concurrency:
+  group: ci-${{ github.workflow }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -30,4 +29,4 @@ jobs:
         run: uv run ./main.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          BOT_SYNC_ENABLED: '1'
+          BOT_SYNC_ENABLED: '0'
