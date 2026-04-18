@@ -7,9 +7,9 @@ from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
 from discord import (
+    AutoShardedClient,
     app_commands,
     Intents,
-    Client,
     Game,
     Interaction,
     TextChannel,
@@ -20,7 +20,7 @@ from discord import (
 )
 import simpleeval
 
-class GoidaBot(Client):
+class GoidaBot(AutoShardedClient):
     user: ClientUser
     def __init__(self) -> None:
         activity = Game("Форсакен")
@@ -186,7 +186,7 @@ async def calculator(ctx: Interaction, expression: str) -> None:
 
 @bot.tree.command(description="Проверить жив ли бот")
 async def check_bot(ctx: Interaction) -> None:
-    result = "Гойда"
+    result = bot.shard_count
     await reply(ctx, result)
 
 def calculate(expression: str) -> str:
