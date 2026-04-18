@@ -27,6 +27,8 @@ class GoidaBot(AutoShardedClient):
         intents = Intents.default()
         intents.message_content = True
         super().__init__(
+            shard_id=1,
+            shard_count=2,
             intents=intents,
             activity=activity,
             chunk_guilds_at_startup=False)
