@@ -31,6 +31,7 @@ class GoidaBot(Client):
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
+        self.sync_enabled = environ["BOT_SYNC_ENABLED"]
         self.max_message_len = 2000
         self.channel_name_len = 8
         self.sekai_code_len = 5
@@ -43,7 +44,7 @@ class GoidaBot(Client):
         }
 
     async def setup_hook(self) -> None:
-        if environ["BOT_SYNC_ENABLED"] == "1":
+        if self.sync_enabled == "1":
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
@@ -71,7 +72,7 @@ class GoidaBot(Client):
 
 bot = GoidaBot()
 
-@bot.tree.context_menu(name="Перевести с Кристальского")
+@bot.tree.context_menu(name="Перевести с Кристалийского")
 async def translate_from_crystalian(
     ctx: Interaction,
     message: Message
@@ -198,9 +199,9 @@ async def calculator(ctx: Interaction, expression: str) -> None:
     result = calculate(expression)
     await reply(ctx, result)
 
-@bot.tree.command(description="Проверить жив ли бот")
-async def check_bot(ctx: Interaction) -> None:
-    result = "Гойда"
+@bot.tree.command(description="Проверить синхронизацию")
+async def check_sync(ctx: Interaction) -> None:
+    result = self.sync_enabled
     await reply(ctx, result)
 
 def calculate(expression: str) -> str:
