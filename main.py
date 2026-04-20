@@ -201,7 +201,7 @@ async def calculator(ctx: Interaction, expression: str) -> None:
 
 @bot.tree.command(description="Проверить синхронизацию")
 async def check_sync(ctx: Interaction) -> None:
-    result = self.sync_enabled
+    result = bot.sync_enabled
     await reply(ctx, result)
 
 def calculate(expression: str) -> str:
