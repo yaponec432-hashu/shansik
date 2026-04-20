@@ -6,6 +6,7 @@ from asyncio import wait_for
 from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
+from uvloop import install
 from discord import (
     app_commands,
     Intents,
@@ -267,4 +268,6 @@ async def reply(
         await ctx.response.send_message(result, silent=silent)
 
 if __name__ == "__main__":
-    bot.run(environ["BOT_TOKEN"])
+    install()
+    token = environ["BOT_TOKEN"]
+    bot.run(token)
