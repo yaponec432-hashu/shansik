@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 """A discord bot."""
 
+from datetime import datetime
 from asyncio import wait_for
 from os import environ
 from gpytranslate import Translator, TranslationError
@@ -32,6 +33,7 @@ class GoidaBot(Client):
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
+        self.start_time = datetime.now()
         self.sync_enabled = environ["BOT_SYNC_ENABLED"]
         self.max_message_len = 2000
         self.channel_name_len = 8
@@ -198,6 +200,15 @@ async def length(ctx: Interaction, text: str) -> None:
 @app_commands.describe(expression="Напиши выражение, типа 2+2")
 async def calculator(ctx: Interaction, expression: str) -> None:
     result = calculate(expression)
+    await reply(ctx, result)
+
+@bot.tree.command(description="Скока времени ишачит бот")
+async def uptime(ctx: Interaction) -> None:
+    duration = datetime.now() - bot.start_time
+    total_seconds = duration.seconds
+    hours = total_seconds // 3600
+    minutes = total_seconds % 60
+    result = f"{hours} часов {minutes} минут"
     await reply(ctx, result)
 
 @bot.tree.command(description="Проверить синхронизацию")
