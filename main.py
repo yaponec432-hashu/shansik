@@ -51,18 +51,20 @@ class GoidaBot(Client):
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
-        message_text = message.content
-        author = message.author
         channel = message.channel
-        channel_name = channel.name
-        if not (
-            is_human_in_text_channel(author, channel)
-            and is_sekai_code(message_text)
-            and (prefix := get_room_prefix(channel_name))
-            and is_manager(author)
-        ):
+        author = message.author
+        if not is_human_in_text_channel(author, channel):
             return
-        name = prefix + message_text
+        message_text = message.content
+        if not is_sekai_code(message_text):
+            return
+        channel_name = channel.name
+        room_prefix = get_room_prefix(channel_name)
+        if not room_prefix:
+            return
+        if not is_manager(author):
+            return
+        name = room_prefix + message_text
         content = f"~~{channel_name}~~ ➔ **`{name}`**"
         try:
             reason = "старый код румы был депнут в казик"
