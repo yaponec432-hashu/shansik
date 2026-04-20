@@ -205,9 +205,9 @@ async def calculator(ctx: Interaction, expression: str) -> None:
 @bot.tree.command(description="Скока времени ишачит бот")
 async def uptime(ctx: Interaction) -> None:
     duration = datetime.now() - bot.start_time
-    total_seconds = duration.seconds
-    hours = total_seconds // 3600
-    minutes = total_seconds % 60
+    total_minutes = duration.seconds // 60
+    minutes = total_minutes % 60
+    hours = total_minutes // 60
     result = f"{hours} часов {minutes} минут"
     await reply(ctx, result)
 
