@@ -30,4 +30,4 @@ jobs:
         run: uv run ./main.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          BOT_SYNC_ENABLED: '1'
+          BOT_SYNC_ENABLED: '0'
