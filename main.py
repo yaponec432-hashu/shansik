@@ -237,15 +237,17 @@ def is_human_in_text_channel(
     return result
 
 def get_room_prefix(channel_name: str) -> str:
-    prefix = ""
-    if (
-        len(channel_name) == bot.channel_name_len
-        and channel_name[0] == bot.room_letter
-        and channel_name[2] == "-"
-        and (room_number := channel_name[1]).isdecimal()
-    ):
-        prefix += f"{bot.room_letter}{room_number}-"
-    return prefix
+    if len(channel_name) != bot.channel_name_len:
+        return ""
+    if channel_name[0] != bot.room_letter:
+        return ""
+    if channel_name[2] != "-":
+        return ""
+    room_number = channel_name[1]
+    if not room_number.isdecimal():
+        return ""
+    room_prefix += f"{bot.room_letter}{room_number}-"
+    return room_prefix
 
 def is_sekai_code(text: str) -> bool:
     result = len(text) == bot.sekai_code_len and text.isdecimal()
