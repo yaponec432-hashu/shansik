@@ -33,8 +33,8 @@ class GoidaBot(Client):
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
-        self.start_time = datetime.now()
         self.sync_enabled = environ["BOT_SYNC_ENABLED"]
+        self.start_time = datetime.now()
         self.max_message_len = 2000
         self.channel_name_len = 8
         self.sekai_code_len = 5
