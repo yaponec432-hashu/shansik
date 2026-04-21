@@ -7,21 +7,24 @@ permissions:
   contents: write
 
 jobs:
-  check-uptime:
-    runs-on: ubuntu-latest
+  save-uptime:
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Save uptime
+      - name: Get uptime
         run: |
           link='https://raw.githubusercontent.com/Sekai-World'
           link="${link}/uptime-monitor/master/history/summary.json"
           uptime="$(curl ${link} | grep -m1 'uptimeMonth')"
-          echo "sekai.best ${uptime} $(date)" > README.md
+          echo "###### sekai.best\n${uptime} $(date)" > README.md
+
+      - name: Save uptime
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email \
             '41898282+github-actions[bot]@users.noreply.github.com'
           git add ./README.md
-          git commit -m 'uptime'
+          git commit -m "Uptime $(date -I)"
           git push
