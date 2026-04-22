@@ -64,9 +64,11 @@ class GoidaBot(Client):
             return
         if not is_manager(author):
             return
-        name = room_prefix + message_text
-        content = f"~~{channel_name}~~ ➔ **`{name}`**"
+        new_code = message_text[-bot.sekai_code_len:]
+        old_code = channel_name[-bot.sekai_code_len:]
+        name = room_prefix + new_code
         try:
+            content = f"~~{old_code}~~ → **`{new_code}`**"
             reason = "старый код румы был депнут в казик"
             await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
         except TimeoutError:
