@@ -68,8 +68,8 @@ class GoidaBot(Client):
             return
         if not is_manager(author):
             return
+        content = f"~~{old_code}~~ →  **`{message_text}`**"
         try:
-            content = f"~~{old_code}~~ →  **`{message_text}`**"
             reason = "старый код румы был депнут в казик"
             name = room_prefix + message_text
             await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
