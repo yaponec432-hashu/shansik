@@ -64,15 +64,14 @@ class GoidaBot(Client):
             return
         if not is_manager(author):
             return
-        new_code = message_text[-bot.sekai_code_len:]
         old_code = channel_name[-bot.sekai_code_len:]
-        name = room_prefix + new_code
+        name = room_prefix + message_text
         try:
-            content = f"~~{old_code}~~ → **`{new_code}`**"
+            content = f"~~{old_code}~~ →  **`{message_text}`**"
             reason = "старый код румы был депнут в казик"
             await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
         except TimeoutError:
-            content = f"Новый код румы: **`{name}`**\n> Юзни `%rm code`"
+            content = f"Новый код румы: **`{message_text}`**\n> Юзни `%rm code`"
         except Forbidden:
             content = "**У меня нет прав** на управление каналами"
         await message.reply(content=content, mention_author=False)
