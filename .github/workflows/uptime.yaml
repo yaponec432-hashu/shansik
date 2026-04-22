@@ -1,7 +1,7 @@
 name: uptime
 on:
   schedule:
-    - cron: '29 11 22 * *'
+    - cron: '29 11 14 * *'
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
           link='https://raw.githubusercontent.com/Sekai-World'
           link="${link}/uptime-monitor/master/history/summary.json"
           uptime="$(curl ${link} | grep -m1 'uptimeMonth')"
-          echo "###### sekai.best\n${uptime} $(date)" > README.md
+          printf "###### sekai.best\n${uptime} $(date)\n" > README.md
 
       - name: Save uptime
         run: |
