@@ -51,6 +51,7 @@ class GoidaBot(Client):
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
+        """Highlight the sekai room code."""
         channel = message.channel
         author = message.author
         if not is_human_in_text_channel(author, channel):
@@ -59,19 +60,21 @@ class GoidaBot(Client):
         if not is_sekai_code(message_text):
             return
         channel_name = channel.name
+        old_code = channel_name[-bot.sekai_code_len:]
+        if message_text == old_code:
+            return
         room_prefix = get_room_prefix(channel_name)
         if not room_prefix:
             return
         if not is_manager(author):
             return
-        old_code = channel_name[-bot.sekai_code_len:]
-        name = room_prefix + message_text
         try:
             content = f"~~{old_code}~~ →  **`{message_text}`**"
             reason = "старый код румы был депнут в казик"
+            name = room_prefix + message_text
             await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
         except TimeoutError:
-            content = f"Новый код румы: **`{message_text}`**\n> Юзни `%rm code`"
+            content = f"Новый код румы: **`{message_text}`**\n> Юзни `%rm`"
         except Forbidden:
             content = "**У меня нет прав** на управление каналами"
         await message.reply(content=content, mention_author=False)
