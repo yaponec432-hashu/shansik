@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: 0BSD
 """A discord bot."""
 
-from signal import signal, SIGTERM, SIGINT
 from datetime import datetime
 from asyncio import wait_for
 from os import environ
@@ -293,8 +292,6 @@ async def reply(
         await ctx.response.send_message(result, silent=silent)
 
 if __name__ == "__main__":
-    signal(SIGTERM, stop_bot)
-    signal(SIGINT, stop_bot)
     install()
     token = environ["BOT_TOKEN"]
     bot.run(token)
