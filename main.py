@@ -5,7 +5,6 @@
 from datetime import datetime
 from asyncio import wait_for
 from os import environ
-from sys import exit
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
 from uvloop import install
@@ -272,10 +271,6 @@ async def translate(source_text: str, target_language: str) -> str:
     except TranslationError:
         result = "*Translation error, try again*"
     return result
-
-async def stop_bot(signum: int, frame: None) -> None:
-    await bot.close()
-    exit(0)
 
 async def reply(
     ctx: Interaction,
