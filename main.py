@@ -263,10 +263,6 @@ def is_manager(author: Member) -> bool:
     result = any(role.name in bot.manager_roles for role in author.roles)
     return result
 
-def stop_bot(signum: int, frame: None) -> None:
-    bot.close()
-    exit(0)
-
 async def translate(source_text: str, target_language: str) -> str:
     translator = Translator()
     try:
@@ -277,6 +273,10 @@ async def translate(source_text: str, target_language: str) -> str:
     except TranslationError:
         result = "*Translation error, try again*"
     return result
+
+async def stop_bot(signum: int, frame: None) -> None:
+    await bot.close()
+    exit(0)
 
 async def reply(
     ctx: Interaction,
