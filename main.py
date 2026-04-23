@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: 0BSD
 """A discord bot."""
 
+from signal import signal, SIGTERM, SIGINT
 from datetime import datetime
 from asyncio import wait_for
 from os import environ
+from sys import exit
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
 from uvloop import install
@@ -261,6 +263,10 @@ def is_manager(author: Member) -> bool:
     result = any(role.name in bot.manager_roles for role in author.roles)
     return result
 
+def stop_bot(signum: int, frame: None) -> None:
+    bot.close()
+    exit(0)
+
 async def translate(source_text: str, target_language: str) -> str:
     translator = Translator()
     try:
@@ -287,6 +293,8 @@ async def reply(
         await ctx.response.send_message(result, silent=silent)
 
 if __name__ == "__main__":
+    signal(SIGTERM, stop_bot)
+    signal(SIGINT, stop_bot)
     install()
     token = environ["BOT_TOKEN"]
     bot.run(token)
