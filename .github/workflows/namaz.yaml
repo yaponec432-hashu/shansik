@@ -4,9 +4,9 @@ on:
     - cron: '29 * * * *'
 #    - cron: '29 23,03,05,07,11,15,19 * * *'
 
-concurrency:
-  group: ci-${{ github.workflow }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ci-${{ github.workflow }}
+#  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -33,7 +33,7 @@ jobs:
           version: "latest"
 
       - name: Run python
-        run: uv run ./main.py
+        run: gh run list --status in_progress; uv run ./main.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           BOT_SYNC_ENABLED: '0'
