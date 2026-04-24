@@ -37,3 +37,4 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           BOT_SYNC_ENABLED: '0'
+          GH_TOKEN: ${{ github.token }}
