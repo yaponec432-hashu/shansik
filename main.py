@@ -222,6 +222,31 @@ async def check_sync(ctx: Interaction) -> None:
     result = bot.sync_enabled
     await reply(ctx, result)
 
+async def translate(source_text: str, target_language: str) -> str:
+    translator = Translator()
+    try:
+        translation = await translator.translate(
+            source_text[:bot.max_message_len],
+            targetlang=target_language)
+        result = translation.text
+    except TranslationError:
+        result = "*Translation error, try again*"
+    return result
+
+async def reply(
+    ctx: Interaction,
+    result: str | int | float | bool,
+    defer: bool = False,
+    silent: bool = False
+) -> None:
+    """Send the result."""
+    if result == "":
+        result = "Полундра штото пошло нетак"
+    if defer:
+        await ctx.followup.send(result, silent=silent)
+    else:
+        await ctx.response.send_message(result, silent=silent)
+
 def calculate(expression: str) -> str:
     if len(expression) <= 32:
         try:
@@ -261,32 +286,10 @@ def is_manager(author: Member) -> bool:
     result = any(role.name in bot.manager_roles for role in author.roles)
     return result
 
-async def translate(source_text: str, target_language: str) -> str:
-    translator = Translator()
-    try:
-        translation = await translator.translate(
-            source_text[:bot.max_message_len],
-            targetlang=target_language)
-        result = translation.text
-    except TranslationError:
-        result = "*Translation error, try again*"
-    return result
-
-async def reply(
-    ctx: Interaction,
-    result: str | int | float | bool,
-    defer: bool = False,
-    silent: bool = False
-) -> None:
-    """Send the result."""
-    if result == "":
-        result = "Полундра штото пошло нетак"
-    if defer:
-        await ctx.followup.send(result, silent=silent)
-    else:
-        await ctx.response.send_message(result, silent=silent)
-
-if __name__ == "__main__":
+def main() -> None:
     install()
     token = environ["BOT_TOKEN"]
     bot.run(token)
+
+if __name__ == "__main__":
+    main()
