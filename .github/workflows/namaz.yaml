@@ -25,10 +25,7 @@ jobs:
 
       - name: test tweaks
         run:
-          echo $HUI
           sysctl -p ./sysctl.conf
-        env:
-          HUI: ${{ github.event.scheduled_time }}
 
       - name: Install uv
         run: bash -c "$(curl -Lf https://astral.sh/uv/install.sh)"
