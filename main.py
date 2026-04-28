@@ -3,7 +3,8 @@
 """A discord bot."""
 
 from datetime import datetime
-from asyncio import wait_for
+from asyncio import wait_for, sleep
+from random import random
 from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
@@ -52,6 +53,7 @@ class GoidaBot(Client):
 
     async def on_message(self, message: Message) -> None:
         """Highlight the sekai room code."""
+        sleep(random())
         channel = message.channel
         author = message.author
         if not is_human_in_text_channel(author, channel):
