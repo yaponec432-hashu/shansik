@@ -24,7 +24,7 @@ jobs:
           python-version: '3.14'
 
       - name: Install uv
-        run: bash -c "$(curl -Lf https://astral.sh/uv/install.sh)"; sudo sysctl net.ipv4.tcp_allowed_congestion_control
+        run: bash -c "$(curl -Lf https://astral.sh/uv/install.sh)"
 
       - name: Run python
         run: uv run ./main.py
