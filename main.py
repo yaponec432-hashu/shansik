@@ -61,7 +61,7 @@ class GoidaBot(Client):
 
     async def on_message(self, message: Message) -> None:
         """Highlight the sekai room code."""
-        sleep(self.wait)
+        await sleep(self.wait)
         channel = message.channel
         author = message.author
         if not is_human_in_text_channel(author, channel):
