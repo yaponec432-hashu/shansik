@@ -55,7 +55,7 @@ class GoidaBot(Client):
         if self.first_run:
             self.first_run = False
             self.wait = 0
-            for i in (2, 4, 6, 8, 10, 12)
+            for i in (2, 4, 6, 8, 10, 12):
                 sleep(1800)
                 self.wait = i
 
