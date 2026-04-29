@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: 0BSD
 """A discord bot."""
 
-from asyncio import wait_for, sleep
 from datetime import datetime
+from asyncio import wait_for
 from os import environ
 from gpytranslate import Translator, TranslationError
 from discord.abc import Messageable
@@ -33,7 +33,6 @@ class GoidaBot(Client):
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
-        self.first_run = True
         self.sync_enabled = environ["BOT_SYNC_ENABLED"]
         self.start_time = datetime.now()
         self.max_message_len = 2000
@@ -51,17 +50,8 @@ class GoidaBot(Client):
         if self.sync_enabled == "1":
             await self.tree.sync()
 
-    async def on_ready(self) -> None:
-        if self.first_run:
-            self.first_run = False
-            self.wait = 0
-            for i in range(12):
-                await sleep(1800)
-                self.wait += 2
-
     async def on_message(self, message: Message) -> None:
         """Highlight the sekai room code."""
-        await sleep(self.wait)
         channel = message.channel
         author = message.author
         if not is_human_in_text_channel(author, channel):
