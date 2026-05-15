@@ -20,12 +20,11 @@ from discord import (
     Member,
     Forbidden
 )
-import simpleeval
 
 class GoidaBot(Client):
     user: ClientUser
     def __init__(self) -> None:
-        activity = Game("Форсакен")
+        activity = Game("трахает робонене")
         intents = Intents.default()
         intents.message_content = True
         super().__init__(
@@ -33,7 +32,7 @@ class GoidaBot(Client):
             activity=activity,
             chunk_guilds_at_startup=False)
         self.tree = app_commands.CommandTree(self)
-        self.sync_enabled = environ["BOT_SYNC_ENABLED"]
+        self.sync_enabled = int(environ["BOT_SYNC_ENABLED"])
         self.start_time = datetime.now()
         self.max_message_len = 2000
         self.channel_name_len = 8
@@ -47,7 +46,7 @@ class GoidaBot(Client):
         }
 
     async def setup_hook(self) -> None:
-        if self.sync_enabled == "1":
+        if self.sync_enabled:
             await self.tree.sync()
 
     async def on_message(self, message: Message) -> None:
@@ -108,29 +107,6 @@ async def translate_into_russian(ctx: Interaction, message: Message) -> None:
     result = await translate(message.content, "ru")
     await reply(ctx, result, True)
 
-@bot.tree.context_menu(name="Посчитать")
-async def context_calculator(ctx: Interaction, message: Message) -> None:
-    await ctx.response.defer(ephemeral=True)
-    result = calculate(message.content)
-    await reply(ctx, result, True)
-
-@bot.tree.command(description="Посчитать значение чтобы сравнить ISV")
-@app_commands.describe(
-    leader_boost="Скор буст лидера",
-    team_boost="Суммарный скор буст тимы"
-)
-async def isv(ctx: Interaction, leader_boost: int, team_boost: int) -> None:
-    result = leader_boost*4 + team_boost - 90
-    await reply(ctx, result)
-
-@bot.tree.command(description="Найти discord id чела")
-@app_commands.describe(
-    member="Чел"
-)
-async def member_id(ctx: Interaction, member: Member) -> None:
-    result = member.id
-    await reply(ctx, result)
-
 @bot.tree.command(description="Найти ориг ник чела")
 @app_commands.describe(
     member="Чел"
@@ -151,7 +127,7 @@ async def member_avatar(ctx: Interaction, member: Member) -> None:
 @bot.tree.command(description="Посчитать длину строки")
 @app_commands.describe(text="Пиши свою строку")
 async def length(ctx: Interaction, text: str) -> None:
-    result = len(text)
+    result = f"Длина {len(text)}"
     await reply(ctx, result)
 
 @bot.tree.command(description="Калькулятор")
@@ -171,7 +147,7 @@ async def uptime(ctx: Interaction) -> None:
 
 @bot.tree.command(description="Проверить синхронизацию")
 async def check_sync(ctx: Interaction) -> None:
-    result = bot.sync_enabled
+    result = "Ага" if bot.sync_enabled else "Нет нихуя"
     await reply(ctx, result)
 
 async def translate(source_text: str, target_language: str) -> str:
@@ -187,28 +163,16 @@ async def translate(source_text: str, target_language: str) -> str:
 
 async def reply(
     ctx: Interaction,
-    result: str | int | float | bool,
-    defer: bool = False,
-    silent: bool = False
+    result: str,
+    defer: bool = False
 ) -> None:
     """Send the result."""
     if result == "":
         result = "Полундра штото пошло нетак"
     if defer:
-        await ctx.followup.send(result, silent=silent)
+        await ctx.followup.send(result)
     else:
-        await ctx.response.send_message(result, silent=silent)
-
-def calculate(expression: str) -> str:
-    if len(expression) <= 32:
-        try:
-            simpleeval.MAX_POWER = 8
-            result = simpleeval.simple_eval(expression.replace(",", ""))
-        except Exception:
-            result = "По понятиям пиши, вотак вот: 1*4/8-8"
-    else:
-        result = "Длинное выражение"
-    return result
+        await ctx.response.send_message(result)
 
 def is_human_in_text_channel(
     author: Member,
