@@ -18,7 +18,7 @@ jobs:
           link='https://raw.githubusercontent.com/Sekai-World'
           link="${link}/uptime-monitor/master/history/summary.json"
           uptime="$(curl ${link} | grep -m1 'uptimeMonth')"
-          printf "###### sekai.best\n%s $(date)\n", "${uptime}" > README.md
+          printf "###### sekai.best\n%s $(date)\n" "${uptime}" > README.md
 
       - name: Save uptime
         run: |
