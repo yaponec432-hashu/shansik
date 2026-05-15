@@ -130,12 +130,6 @@ async def length(ctx: Interaction, text: str) -> None:
     result = f"Длина {len(text)}"
     await reply(ctx, result)
 
-@bot.tree.command(description="Калькулятор")
-@app_commands.describe(expression="Напиши выражение, типа 2+2")
-async def calculator(ctx: Interaction, expression: str) -> None:
-    result = calculate(expression)
-    await reply(ctx, result)
-
 @bot.tree.command(description="Скока времени ишачит бот")
 async def uptime(ctx: Interaction) -> None:
     duration = datetime.now() - bot.start_time
