@@ -20,7 +20,7 @@ from discord import (
     Forbidden
 )
 
-class GoidaBot(Client):
+class MasterBot(Client):
     user: ClientUser
     def __init__(self) -> None:
         activity = Game("трахает робонене")
@@ -78,7 +78,7 @@ class GoidaBot(Client):
             content = "**У меня нет прав** на управление каналами"
         await message.reply(content=content, mention_author=False)
 
-bot = GoidaBot()
+bot = MasterBot()
 
 @bot.tree.context_menu(name="Перевести с Кристалийского")
 async def translate_from_crystalian(
