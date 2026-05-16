@@ -44,6 +44,8 @@ class GoidaBot(Client):
         }
 
     async def setup_hook(self) -> None:
+        with open("./master_id", "w") as file:
+            file.write(f"{self.user.id}\n")
         if self.sync_enabled:
             await self.tree.sync()
 
