@@ -57,7 +57,7 @@ class GoidaBot(Client):
         if not is_sekai_code(message_text):
             return
         channel_name = channel.name
-        old_code = channel_name[-bot.sekai_code_len:]
+        old_code = channel_name[-self.sekai_code_len:]
         if message_text == old_code:
             return
         room_prefix = get_room_prefix(channel_name)
