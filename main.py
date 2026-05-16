@@ -71,7 +71,7 @@ class GoidaBot(Client):
             name = room_prefix + message_text
             await wait_for(channel.edit(name=name, reason=reason), timeout=2.0)
         except TimeoutError:
-            content = f"Новый код румы: **`{message_text}`**\n> Юзни `%rm`"
+            content = f"! {name}"
         except Forbidden:
             content = "**У меня нет прав** на управление каналами"
         await message.reply(content=content, mention_author=False)
